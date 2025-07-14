@@ -13,18 +13,17 @@ app.use(express.json());
 // Endpoint principal para generar QR
 app.post('/generate-qr', async (req, res) => {
   try {
-    const { uid, ...additionalFields } = req.body;
-
-    // Validar que el campo uid esté presente
-    if (!uid) {
+    // Validar que haya al menos un campo en el body
+    if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({
-        error: 'El campo "uid" es obligatorio',
-        message: 'Debe proporcionar un uid en el cuerpo de la petición'
+        error: 'El body no puede estar vacío',
+        message: 'Debe proporcionar al menos un campo en el cuerpo de la petición'
       });
     }
 
-    // Crear el texto del QR (solo el uid como especificado)
-    const qrText = `uid=${uid}`;
+    // Codificar todos los campos recibidos en el QR como query string
+    const params = new URLSearchParams(req.body).toString();
+    const qrText = params;
 
     // Generar el QR como base64
     const qrBase64 = await QRCode.toDataURL(qrText, {
@@ -40,7 +39,7 @@ app.post('/generate-qr', async (req, res) => {
 
     // Devolver la respuesta en el formato especificado
     res.json({
-      uid: uid,
+      ...req.body, // Devuelve también los datos recibidos
       qr_base64: qrBase64
     });
 
