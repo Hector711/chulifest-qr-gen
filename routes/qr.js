@@ -2,17 +2,17 @@ const express = require('express');
 const QRCode = require('qrcode');
 const router = express.Router();
 
-// Endpoint principal para generar QR solo con user_recID
+// Endpoint principal para generar QR solo con client_recID
 router.post('/generate-qr', async (req, res) => {
   try {
-    const { user_recID } = req.body;
-    if (!user_recID) {
+    const { client_recID } = req.body;
+    if (!client_recID) {
       return res.status(400).json({
-        error: 'El campo "user_recID" es obligatorio',
-        message: 'Debe proporcionar un user_recID en el cuerpo de la petición'
+        error: 'El campo "client_recID" es obligatorio',
+        message: 'Debe proporcionar un client_recID en el cuerpo de la petición'
       });
     }
-    const qrText = `user_recID=${user_recID}`;
+    const qrText = `client_recID=${client_recID}`;
     const qrBase64 = await QRCode.toDataURL(qrText, {
       errorCorrectionLevel: 'M',
       type: 'image/png',
@@ -24,7 +24,7 @@ router.post('/generate-qr', async (req, res) => {
       }
     });
     res.json({
-      user_recID,
+      client_recID,
       qr_base64: qrBase64
     });
   } catch (error) {
