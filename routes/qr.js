@@ -11,7 +11,7 @@ router.post('/generate-qr', async (req, res) => {
         error: 'El campo "client_recID" es obligatorio',
         message: 'Debe proporcionar un client_recID en el cuerpo de la petición'
       });
-    }
+    } 
     const qrText = `client_recID=${client_recID}`;
     const qrBase64 = await QRCode.toDataURL(qrText, {
       errorCorrectionLevel: 'M',
